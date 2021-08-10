@@ -225,11 +225,21 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        elif event.type == pygame.MOUSEBUTTONDOWN and not almost_racing and not racing and not race_over:
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                running = False
+        if event.type == pygame.MOUSEBUTTONDOWN and not almost_racing and not racing and not race_over:
             almost_racing = True
             racing_beep_time = True
+        elif event.type == pygame.KEYDOWN and not almost_racing and not racing and not race_over:
+            if event.key == pygame.K_SPACE:
+                almost_racing = True
+                racing_beep_time = True
         elif event.type == pygame.MOUSEBUTTONDOWN and not almost_racing and not racing and race_over:
             running = False
+        elif event.type == pygame.KEYDOWN and not almost_racing and not racing and race_over:
+            if event.key == pygame.K_SPACE:
+                running = False
 
     # fill the background with green
     screen.fill((  0, 120,   0))
