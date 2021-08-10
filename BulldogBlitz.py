@@ -8,12 +8,8 @@ def getPic(num_players):
 
     cam = cv2.VideoCapture(0)
     cv2.startWindowThread()
-    #cv2.namedWindow("Player Pictures", cv2.WND_PROP_FULLSCREEN)#cv2.WINDOW_NORMAL)
-    cv2.namedWindow("Player Pictures", cv2.WINDOW_NORMAL)#WND_PROP_FULLSCREEN)#cv2.WINDOW_NORMAL)
-    cv2.setWindowProperty("Player Pictures", cv2.WND_PROP_FULLSCREEN, cv2.WND_PROP_FULLSCREEN)#CV_WINDOW_FULLSCREEN);
-    #cv2.setWindowProperty("Player Pictures", cv2.WND_PROP_FULLSCREEN,
-    #                      cv2.WINDOW_FULLSCREEN)
-    #cv2.setWindowProperty("Player Pictures", cv2.WND_PROP_FULLSCREEN, cv2.WND_PROP_FULLSCREEN)
+    cv2.namedWindow("Player Pictures", cv2.WINDOW_NORMAL)#WND_PROP_FULLSCREEN)#
+    cv2.setWindowProperty("Player Pictures", cv2.WND_PROP_FULLSCREEN, cv2.WND_PROP_FULLSCREEN)#WINDOW_FULLSCREEN);
 
     font                   = cv2.FONT_HERSHEY_SIMPLEX
     topLeftCornerOfText    = (10,25)
@@ -22,16 +18,9 @@ def getPic(num_players):
     fontColor              = (255,255,255)
     lineType               = 2
     
-
-
-    # Start coordinate, here (0, 0)
-    # represents the top left corner of image
-    #start_point = (0, 0)
-    ## represents the bottom right corner of image
-    #end_point = (250, 250)
-    # Green color in BGR
+    # line color
     color = (0, 255, 0)
-    # Line thickness of 9 px
+    # line thickness
     thickness = 9
     
     frame = None
@@ -97,6 +86,8 @@ def getPic(num_players):
             orig_frame = cv2.line(orig_frame, (int(frame_width*0.67), int(frame_height*.15)), (int(frame_width*0.67), int(frame_height*0.85)), color, thickness)
 
             if k%256 == 27:
+                # ESCAPE pressed
+                # redo request for picture
                 pic_captured = False
                 decided = False
             if k%256 == 32:
@@ -127,18 +118,13 @@ join_today_font = pygame.font.Font('arial.ttf', 28)
 join_today_textsurface = join_today_font.render('Join Girls who Code Today!', False, (255, 255, 255))
 
 # Set up the drawing window
-#screen = pygame.display.set_mode([500, 500])
 display_width = 800
 display_height = 600
 
 screen = pygame.display.set_mode((display_width,display_height), pygame.FULLSCREEN)
 pygame.display.set_caption('Bulldog Blitz')
 
-
-#players = [pygame.image.load('p1.png') for i in range(num_players)]
-#players = [pygame.transform.scale(players[i], (50, 50)) for i in range(num_players)]
-
-class Turtle:
+class Bulldog:
     pass
 class Player:
     pass
@@ -156,9 +142,6 @@ crown = pygame.transform.rotate(crown, 45)
 frame = pygame.image.load('frame.png')
 frame = pygame.transform.scale(frame, (410, 410))
 
-#x = (display_width * 0.45)
-#y = (display_height * 0.8)
-
 # game clock
 clock = pygame.time.Clock()
 
@@ -167,8 +150,8 @@ screen_height_div_bulldogs = display_height // num_players
 excess_height = screen_height_div_bulldogs - bulldog.get_height()
 face_vertical_offset = 32
 assert excess_height > 0, "Too many players."
-t = Turtle()
-t_orig = Turtle()
+t = Bulldog()
+t_orig = Bulldog()
 t.x = [display_width * 0.05 for i in range(num_players)]
 t_orig.y = [screen_height_div_bulldogs*i + 0.5*excess_height for i in range(num_players)]
 t.y = [screen_height_div_bulldogs*i + 0.5*excess_height for i in range(num_players)]
@@ -212,11 +195,13 @@ while running:
         pygame.mixer.Sound.play(start_beep)
         racing_beep_time = False
 
+    # start racing and start the huffing sound after the beep sound ends
     if not race_over and almost_racing and not pygame.mixer.get_busy():
         almost_racing = False
         racing = True
         pygame.mixer.Sound.play(huffing)
 
+    # make the crowd cheering noise after the race ends
     if make_crowd_cheer and not pygame.mixer.get_busy():
         pygame.mixer.Sound.play(cheering)
         make_crowd_cheer = False
@@ -274,13 +259,11 @@ while running:
     t_bulldog = pygame.transform.flip(bulldog, True, False)
     [screen.blit(t_bulldog, (t.x[i],t.y[i])) for i in range(num_players)]
 
-    # draw green rectangles
-    #[pygame.draw.rect(screen, [0, 255, 0], [p.x[i], p.y[i], 50, 50], False) for i in range(num_players)]
-  
     # draw heads
     for i in range(num_players):
     	screen.blit(p.img[i], (p.x[i], p.y[i]))
 
+    # draw winner head and frame and crown
     if race_over:
         screen.blit(join_today_textsurface, 
                     (0.5*(race_end-join_today_textsurface.get_width()), 
@@ -289,12 +272,6 @@ while running:
         screen.blit(winner_img, (110,110))
         screen.blit(frame, (100,100))
         screen.blit(crown, (-90,-95))
-
-
-    #winner_img = pygame.transform.scale(p.img_orig[winner_num], (390, 390))
-    #screen.blit(winner_img, (110,110))
-    #screen.blit(frame, (100,100))
-    #screen.blit(crown, (-90,-95))
 
     # update the display
     pygame.display.update()
