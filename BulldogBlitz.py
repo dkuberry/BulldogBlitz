@@ -177,7 +177,7 @@ p_orig = Player()
 p.x = [display_width * 0.18 for i in range(num_players)]
 p_orig.y = [screen_height_div_bulldogs*i + 0.5*excess_height + face_vertical_offset for i in range(num_players)]
 p.y = [screen_height_div_bulldogs*i + 0.5*excess_height + face_vertical_offset for i in range(num_players)]
-p.rate = [np.random.rand(1)*1.0+.0 for i in range(num_players)]
+p.rate = (np.random.permutation(num_players)+3)*1./3.
 
 # load captured images
 p.img_orig = [pygame.image.load('b%s.png'%(i+1)) for i in range(num_players)]
@@ -255,7 +255,6 @@ while running:
 
     # if racing right now, move bulldogs / players
     if racing:
-        #p.rate = [np.random.rand(1)*.6+.4 for i in range(num_players)]
         for i in range(num_players):
             p.x[i] += 1*p.rate[i]
             t.x[i] += 1*p.rate[i]
